@@ -9,12 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.NumberPicker;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.blackcat.currencyedittext.CurrencyEditText;
 import com.blackcat.currencyedittext.CurrencyTextFormatter;
+import com.blackcat.currencyedittexttester.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,64 +20,39 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
-
 public class MainActivity extends Activity {
 
-    @BindView(R.id.cet)
-    CurrencyEditText cet;
-
-    @BindView(R.id.et_raw_val)
-    TextView et_raw_val;
-
-    @BindView(R.id.et_formatted_val)
-    TextView et_formatted_val;
-
-    @BindView(R.id.testable_locales_locale_info)
-    TextView testable_locales_locale_data;
-
-    @BindView(R.id.spinner_testable_locales)
-    Spinner testable_locales_spinner;
-
-    @BindView(R.id.testable_locales_cet)
-    CurrencyEditText testable_locales_cet;
-
-    @BindView(R.id.decimal_digits_tool_cet)
-    CurrencyEditText decimal_digits_tool_cet;
-
-    @BindView(R.id.decimal_digits_tool_number_picker)
-    NumberPicker decimal_digits_tool_number_picker;
-
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        
-        ButterKnife.bind(this);
+        binding = ActivityMainBinding.inflate(
+                getLayoutInflater()
+        );
+        setContentView(binding.getRoot());
 
         configureTestableLocalesTool();
         configureDecimalDigitsTool();
+
+        binding.cetResetButton.setOnClickListener((view) -> onResetClicked());
+
+        binding.button.setOnClickListener((view) -> onRefreshClicked());
     }
 
-    @OnClick(R.id.cet_reset_button)
     void onResetClicked(){
-        cet.setText("");
+        binding.cet.setText("");
     }
 
     @SuppressWarnings("unused")
     @SuppressLint("SetTextI18n")
-    @OnClick(R.id.button)
     void onRefreshClicked(){
         Log.d("MainActivity", "Locale: " + getResources().getConfiguration().locale.toString());
         Log.d("MainActivity", "DefaultLocale: " + Locale.getDefault());
 
         long maxRange = 15000000;
         long randNum = (long) (new Random().nextDouble() * maxRange);
-        et_raw_val.setText(Long.toString(randNum));
+        binding.etRawVal.setText(Long.toString(randNum));
 
         String result = "oops";
         try{
@@ -91,7 +63,7 @@ public class MainActivity extends Activity {
             Log.e("MainActivity", e.getLocalizedMessage());
         }
 
-        et_formatted_val.setText(result);
+        binding.etFormattedVal.setText(result);
     }
 
 
@@ -120,15 +92,15 @@ public class MainActivity extends Activity {
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerContents);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        testable_locales_spinner.setAdapter(spinnerArrayAdapter);
-        testable_locales_spinner.setSelection(startingPosition);
+        binding.spinnerTestableLocales.setAdapter(spinnerArrayAdapter);
+        binding.spinnerTestableLocales.setSelection(startingPosition);
 
-        configureViewForLocale((String) testable_locales_spinner.getSelectedItem());
+        configureViewForLocale((String) binding.spinnerTestableLocales.getSelectedItem());
 
-        testable_locales_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.spinnerTestableLocales.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                configureViewForLocale((String) testable_locales_spinner.getSelectedItem());
+                configureViewForLocale((String) binding.spinnerTestableLocales.getSelectedItem());
             }
 
             @Override
@@ -158,20 +130,20 @@ public class MainActivity extends Activity {
                             System.lineSeparator() +
                             "Currency Symbol: " + Currency.getInstance(localeInQuestion).getSymbol();
 
-        testable_locales_locale_data.setText(localeInfo);
-        testable_locales_cet.configureViewForLocale(localeInQuestion);
+        binding.testableLocalesLocaleInfo.setText(localeInfo);
+        binding.testableLocalesCet.configureViewForLocale(localeInQuestion);
     }
 
     private void configureDecimalDigitsTool(){
-        decimal_digits_tool_number_picker.setMinValue(0);
-        decimal_digits_tool_number_picker.setMaxValue(340);
+        binding.decimalDigitsToolNumberPicker.setMinValue(0);
+        binding.decimalDigitsToolNumberPicker.setMaxValue(340);
 
-        decimal_digits_tool_number_picker.setValue(2);
+        binding.decimalDigitsToolNumberPicker.setValue(2);
 
-        decimal_digits_tool_cet.setDecimalDigits(decimal_digits_tool_number_picker.getValue());
+        binding.decimalDigitsToolCet.setDecimalDigits(binding.decimalDigitsToolNumberPicker.getValue());
 
-        decimal_digits_tool_number_picker.setOnValueChangedListener(
-            (picker, oldVal, newVal) -> decimal_digits_tool_cet.setDecimalDigits(newVal)
+        binding.decimalDigitsToolNumberPicker.setOnValueChangedListener(
+            (picker, oldVal, newVal) -> binding.decimalDigitsToolCet.setDecimalDigits(newVal)
         );
     }
 

@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 34
     buildToolsVersion '34.0.0'
+    namespace "com.blackcat.currencyedittext"
 
     defaultConfig {
         minSdkVersion 9
@@ -22,6 +23,7 @@ android {
 repositories {
     mavenCentral()
     jcenter()
+    google()
 }
 
 

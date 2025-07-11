@@ -14,6 +14,7 @@ buildscript {
 android {
     compileSdkVersion 34
     buildToolsVersion '34.0.0'
+    namespace = "com.blackcat.currencyedittexttester"
 
     defaultConfig {
         applicationId "com.blackcat.currencyedittexttester"
@@ -40,18 +41,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 repositories {
     mavenCentral()
     jcenter()
     maven { url 'https://jitpack.io' }
+    google()
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':currencyedittext')
-
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "org.mockito:mockito-core:2.8.47"
@@ -60,5 +63,4 @@ dependencies {
     testImplementation "org.robolectric:robolectric:3.3.2"
     testImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     testImplementation 'com.github.mikinw:DataSet:4006389335'
-    testAnnotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
