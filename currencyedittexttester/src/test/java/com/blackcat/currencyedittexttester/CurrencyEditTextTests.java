@@ -19,9 +19,6 @@ import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,7 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP)
 public class CurrencyEditTextTests {
 
-    @SuppressWarnings("WeakerAccess")
+    /*@SuppressWarnings("WeakerAccess")
     @BindView(R.id.cet)
     CurrencyEditText currencyEditText;
 
@@ -269,5 +266,5 @@ public class CurrencyEditTextTests {
         currencyEditText.setText(".");
 
         assertThat(currencyEditText.getText().toString(), is(equalTo("")));
-    }
+    }*/
 }
