@@ -5,15 +5,17 @@ import android.content.res.TypedArray;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.EditText;
 
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.text.DecimalFormat;
 import java.util.Currency;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
-public class CurrencyEditText extends EditText {
+public class CurrencyEditText extends TextInputEditText {
 
-    private Locale currentLocale;
+    private DecimalFormat currentLocale;
 
     private Locale defaultLocale = Locale.US;
 
@@ -83,7 +85,7 @@ public class CurrencyEditText extends EditText {
      *
      * @return the Locale object for the given users configuration
      */
-    public Locale getLocale() {
+    public DecimalFormat getLocale() {
         return currentLocale;
     }
 
@@ -98,7 +100,7 @@ public class CurrencyEditText extends EditText {
      * of this method.
      * @param locale The deviceLocale to set the CurrencyEditText box to adhere to.
      */
-    public void setLocale(Locale locale){
+    public void setLocale(DecimalFormat locale){
         currentLocale = locale;
         refreshView();
     }
@@ -154,10 +156,10 @@ public class CurrencyEditText extends EditText {
      * Note that this method will set the decimalDigits field, potentially overriding
      * values from previous setDecimalDigits calls.
      */
-    public void configureViewForLocale(Locale locale){
+    public void configureViewForLocale(DecimalFormat locale){
         this.currentLocale = locale;
-        Currency currentCurrency = getCurrencyForLocale(locale);
-        decimalDigits = currentCurrency.getDefaultFractionDigits();
+        //Currency currentCurrency = getCurrencyForLocale(locale);
+        decimalDigits = 2;// currentCurrency.getDefaultFractionDigits();
         refreshView();
     }
 
@@ -223,7 +225,7 @@ public class CurrencyEditText extends EditText {
         this.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
 
         currentLocale = retrieveLocale();
-        Currency currentCurrency = getCurrencyForLocale(currentLocale);
+        Currency currentCurrency = currentLocale.getCurrency();
         decimalDigits = currentCurrency.getDefaultFractionDigits();
         initCurrencyTextWatcher();
     }
@@ -255,7 +257,7 @@ public class CurrencyEditText extends EditText {
 
     private String getDefaultHintValue() {
         try {
-            return Currency.getInstance(currentLocale).getSymbol();
+            return currentLocale.getCurrency().getSymbol();
         }
         catch(Exception e){
             Log.w("CurrencyEditText", String.format("An error occurred while getting currency symbol for hint using locale '%s', falling back to defaultLocale", currentLocale));
@@ -270,7 +272,7 @@ public class CurrencyEditText extends EditText {
         }
     }
 
-    private Locale retrieveLocale(){
+    private DecimalFormat retrieveLocale(){
         Locale locale;
         try{
             locale = getResources().getConfiguration().locale;
@@ -279,7 +281,7 @@ public class CurrencyEditText extends EditText {
             Log.w("CurrencyEditText", String.format("An error occurred while retrieving users device locale, using fallback locale '%s'", defaultLocale), e);
             locale = defaultLocale;
         }
-        return locale;
+        return (DecimalFormat) DecimalFormat.getCurrencyInstance(locale);
     }
 
     private Currency getCurrencyForLocale(Locale locale){

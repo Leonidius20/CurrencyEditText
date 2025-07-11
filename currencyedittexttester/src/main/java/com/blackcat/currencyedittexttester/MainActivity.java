@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 
 import com.blackcat.currencyedittext.CurrencyTextFormatter;
 import com.blackcat.currencyedittexttester.databinding.ActivityMainBinding;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
@@ -41,7 +43,7 @@ public class MainActivity extends Activity {
     }
 
     void onResetClicked(){
-        binding.cet.setText("");
+        ((EditText)binding.cet).setText("");
     }
 
     @SuppressWarnings("unused")
@@ -56,7 +58,7 @@ public class MainActivity extends Activity {
 
         String result = "oops";
         try{
-            Locale l = Locale.getDefault();
+            DecimalFormat l = (DecimalFormat)DecimalFormat.getCurrencyInstance(Locale.getDefault());
             result = CurrencyTextFormatter.formatText(Long.toString(randNum), l, Locale.getDefault());
         }
         catch(IllegalArgumentException e){
@@ -131,7 +133,9 @@ public class MainActivity extends Activity {
                             "Currency Symbol: " + Currency.getInstance(localeInQuestion).getSymbol();
 
         binding.testableLocalesLocaleInfo.setText(localeInfo);
-        binding.testableLocalesCet.configureViewForLocale(localeInQuestion);
+        binding.testableLocalesCet.configureViewForLocale(
+                (DecimalFormat)DecimalFormat.getCurrencyInstance(localeInQuestion)
+        );
     }
 
     private void configureDecimalDigitsTool(){
