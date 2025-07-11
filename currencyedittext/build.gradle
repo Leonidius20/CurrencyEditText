@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 34
@@ -9,7 +10,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 34
         versionCode 202
-        versionName "2.0.2"
+        versionName "2.0.2.M"
     }
 
     buildTypes {
@@ -30,5 +31,23 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
 }
 
-apply from: '../gradle-mvn-push.gradle'
-
+afterEvaluate {
+    publishing {
+        publications {
+            releaseAar(MavenPublication) {
+                groupId = 'com.github.blackcat27'
+                artifactId = 'CurrencyEditText'
+                version = android.defaultConfig.versionName
+            }
+        }
+        repositories {
+            maven {
+                url = uri('https://oss.sonatype.org/service/local/staging/deploy/maven2/')
+                credentials {
+                    username ''
+                    password ''
+                }
+            }
+        }
+    }
+}
