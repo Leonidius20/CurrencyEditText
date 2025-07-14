@@ -20,6 +20,14 @@ android {
         }
     }
     sourceSets { main { java.srcDirs = ['src/main/java'] } }
+
+    publishing {
+        singleVariant('release') {
+            // Optionally include sources and javadoc JARs
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 repositories {
     mavenCentral()
@@ -34,10 +42,18 @@ dependencies {
 afterEvaluate {
     publishing {
         publications {
-            releaseAar(MavenPublication) {
+            // Define a publication named 'mavenAar' (you can choose any name)
+            // This publication will consume the artifacts prepared by singleVariant('release')
+            mavenAar(MavenPublication) {
+                // Tell MavenPublish plugin to take the 'release' component (AAR, sources, javadoc)
+                // which was configured by android.publishing.singleVariant.
+                from components.release // 'release' here refers to the component created by AGP
+
+                // Explicitly set groupId, artifactId, and version.
+                // While AGP might infer some, explicitly setting them is robust.
                 groupId = 'com.github.blackcat27'
                 artifactId = 'CurrencyEditText'
-                version = android.defaultConfig.versionName
+                version = android.defaultConfig.versionName // Use the version from defaultConfig
             }
         }
         repositories {
